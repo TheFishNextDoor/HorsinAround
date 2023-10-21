@@ -3,8 +3,13 @@ package fun.sunrisemc.horses;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 public class Utl {
 
@@ -15,7 +20,7 @@ public class Utl {
         return bd.doubleValue();
     }
 
-    public static String ticksToTime(int ticks) {
+    public static String toTime(int ticks) {
         int days = ticks / 1728000;
         int hours = (ticks % 1728000) / 72000;
         int minutes = (ticks % 72000) / 1200;
@@ -29,6 +34,7 @@ public class Utl {
         else if (minutes == 1) list.add(minutes + " minute");
         if (seconds > 1) list.add(seconds + " seconds");
         else if (seconds == 1) list.add(seconds + " second");
+        if (list.isEmpty()) return "0 seconds";
         return String.join(", ", list);
     }
 
@@ -59,5 +65,26 @@ public class Utl {
         String customName = entity.getCustomName();
         if (customName != null) return customName;
         return entity.getName();
+    }
+
+    public static Entity rayTraceEntity(final Player player) {
+        Location eyeLocation = player.getEyeLocation();
+        Vector direction = eyeLocation.getDirection();
+        direction.multiply(100);
+        RayTraceResult result = player.getWorld().rayTraceEntities(eyeLocation, direction, 65, 0.1, new Predicate<org.bukkit.entity.Entity>() {
+            @Override
+            public boolean test(Entity entity) {
+                return entity != player;
+            }
+        });
+        if (result == null) return null;
+        return result.getHitEntity();
+    }
+
+    public static double toSpeed(Vector velocity) {
+        double x = velocity.getX();
+        double y = velocity.getY();
+        double z = velocity.getZ();
+        return Math.sqrt(x * x + y * y + z * z);
     }
 }
