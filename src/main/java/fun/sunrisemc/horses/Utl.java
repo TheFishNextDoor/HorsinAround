@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -62,9 +65,41 @@ public class Utl {
     }
 
     public static String id(Entity entity) {
+        if (entity == null) return null;
         String customName = entity.getCustomName();
         if (customName != null) return customName;
         return entity.getName();
+    }
+
+    public static String id(ItemStack itemStack) {
+        String name = null;
+        if (itemStack == null) return name;
+        if (itemStack.getType().isAir()) return name;
+        if (itemStack.hasItemMeta()) name = itemStack.getItemMeta().getDisplayName();
+        if (name == null) name = id(itemStack.getType());
+        if (name == null) return null;
+        Integer amount = itemStack.getAmount();
+        if (amount > 1) name = amount.toString() + "x " + name;
+        return name; 
+    }
+
+    public static String id(Material material) {
+        if (material == null) return null;
+        if (material.isAir()) return null;
+        return titleCase(material.name());
+    }
+
+    public static String id(Block block) {
+        if (block == null) return null;
+        if (block.getType().isAir()) return null;
+        String coords = id(block.getLocation());
+        if (coords == null) return null;
+        return id(block.getType()) + " at " + coords;
+    }
+
+    public static String id(Location location) {
+        if (location == null) return null;
+        return location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ();
     }
 
     public static Entity rayTraceEntity(final Player player) {
