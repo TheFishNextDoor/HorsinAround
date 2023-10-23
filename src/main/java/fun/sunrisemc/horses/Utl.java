@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,6 +40,10 @@ public class Utl {
         else if (seconds == 1) list.add(seconds + " second");
         if (list.isEmpty()) return "0 seconds";
         return String.join(", ", list);
+    }
+
+    public static String toPercent(Float val) {
+        return round(val * 100, 0) + "%";
     }
 
     public static String titleCase(String input) {
@@ -86,7 +91,12 @@ public class Utl {
     public static String id(Material material) {
         if (material == null) return null;
         if (material.isAir()) return null;
-        return titleCase(material.name());
+        return titleCase(material.toString());
+    }
+
+    public static String id(BlockFace blockFace) {
+        if (blockFace == null) return null;
+        return titleCase(blockFace.toString());
     }
 
     public static String id(Block block) {

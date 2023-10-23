@@ -33,10 +33,6 @@ public abstract class PlayerMsg {
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f" + name + "&r: " + value));
     }
 
-    public void ratiof(String name, Object value, Object max) { // Ratio Field
-        field(name, value + "/" + max);
-    }
-
     public void percentf(String name, double value, double max) { // Ratio Field
         double ratio = value / max;
         double percent = Utl.round(ratio * 100, 0);

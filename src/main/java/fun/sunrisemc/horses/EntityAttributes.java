@@ -4,20 +4,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Allay;
 import org.bukkit.entity.Axolotl;
+import org.bukkit.entity.Bat;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.Breedable;
 import org.bukkit.entity.Camel;
 import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.ElderGuardian;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Ghast;
 import org.bukkit.entity.GlowItemFrame;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Hoglin;
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
+import org.bukkit.entity.NPC;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Panda;
 import org.bukkit.entity.Parrot;
@@ -27,6 +33,7 @@ import org.bukkit.entity.PiglinAbstract;
 import org.bukkit.entity.Raider;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Sittable;
+import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Steerable;
 import org.bukkit.entity.Strider;
 import org.bukkit.entity.Turtle;
@@ -91,6 +98,31 @@ public class EntityAttributes {
         if (livingEntity.isInvisible()) list.add(ChatColor.GRAY + "Invisible");
     }
 
+    public void a(Ghast ghast) {
+        if (ghast.isCharging()) list.add(ChatColor.RED + "Charging");
+    }
+
+    public void a(Bat  bat) {
+        if (!bat.isAwake()) list.add(ChatColor.DARK_GRAY + "Sleeping");
+    }
+
+    public void a(Creature creature) {
+        if (creature instanceof NPC) list.add(ChatColor.GRAY + "NPC");
+    }
+
+    public void a(Allay allay) {
+        if (allay.canDuplicate()) list.add(ChatColor.AQUA + "Can Duplicate");
+        if (allay.isDancing()) list.add(ChatColor.LIGHT_PURPLE + "Dancing");
+    }
+
+    public void a(IronGolem ironGolem) {
+        if (ironGolem.isPlayerCreated()) list.add(ChatColor.DARK_GRAY + "Player Created");
+    }
+
+    public void a(Snowman snowman) {
+        if (snowman.isDerp()) list.add(ChatColor.BLUE + "Derp");
+    }
+
     public void a(Mob mob) {
         if (!mob.isAware()) list.add(ChatColor.DARK_GRAY + "Unaware");
     }
@@ -123,7 +155,7 @@ public class EntityAttributes {
         if (vindicator.isJohnny()) list.add(ChatColor.DARK_RED + "Johnny");
     }
 
-    public void a (Witch witch) {
+    public void a(Witch witch) {
         if (witch.isDrinkingPotion()) list.add(ChatColor.DARK_PURPLE + "Drinking Potion");
     }
 

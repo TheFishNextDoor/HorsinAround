@@ -14,10 +14,14 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AbstractSkeleton;
+import org.bukkit.entity.AbstractVillager;
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Allay;
+import org.bukkit.entity.Ambient;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Axolotl;
+import org.bukkit.entity.Bat;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Boss;
@@ -28,16 +32,23 @@ import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fish;
+import org.bukkit.entity.Flying;
 import org.bukkit.entity.Fox;
 import org.bukkit.entity.Frog;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.GlowSquid;
+import org.bukkit.entity.Golem;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Hoglin;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Husk;
 import org.bukkit.entity.Illager;
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
@@ -49,25 +60,35 @@ import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Panda;
 import org.bukkit.entity.Parrot;
+import org.bukkit.entity.Phantom;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Piglin;
 import org.bukkit.entity.PiglinAbstract;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.PufferFish;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Raider;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Sittable;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Sniffer;
+import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Spellcaster;
+import org.bukkit.entity.Squid;
 import org.bukkit.entity.Steerable;
 import org.bukkit.entity.Strider;
 import org.bukkit.entity.Tameable;
+import org.bukkit.entity.TropicalFish;
 import org.bukkit.entity.Turtle;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Vex;
+import org.bukkit.entity.Villager;
 import org.bukkit.entity.Vindicator;
+import org.bukkit.entity.WanderingTrader;
 import org.bukkit.entity.Warden;
+import org.bukkit.entity.WaterMob;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
@@ -75,6 +96,7 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 import org.bukkit.entity.Horse.Style;
 import org.bukkit.entity.Spellcaster.Spell;
+import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Warden.AngerLevel;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.entity.minecart.HopperMinecart;
@@ -92,14 +114,8 @@ public class EntityInfoMsg extends PlayerMsg {
         EntityAttributes attributes = new EntityAttributes();
         h1(Utl.titleCase(entity.getType().toString()) + " Info");
         name(entity);
-        age(entity);
         fire(entity);
         attributes.a(entity);
-
-        if (entity instanceof Sittable) {
-            Sittable sittable = (Sittable) entity;
-            attributes.a(sittable);
-        }
 
         if (entity instanceof Hanging) {
             Hanging hanging = (Hanging) entity;
@@ -152,13 +168,16 @@ public class EntityInfoMsg extends PlayerMsg {
             }
         }
 
-        if (entity instanceof Colorable) {
-            Colorable colorable = (Colorable) entity;
-            color(colorable);
+        if (entity instanceof Damageable) {
+            Damageable damageable = (Damageable) entity;
+            health(damageable);
+            absorbtion(damageable);
         }
 
         if (entity instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) entity;
+            maxHealth(livingEntity);
+            timeLived(livingEntity);
             movementSpeed(livingEntity);
             air(livingEntity);
             arrows(livingEntity);
@@ -170,8 +189,93 @@ public class EntityInfoMsg extends PlayerMsg {
                 Mob mob = (Mob) livingEntity;
                 attributes.a(mob);
 
+                if (mob instanceof Slime) {
+                    Slime slime = (Slime) mob;
+                    size(slime);
+                }
+
+                if (mob instanceof Flying) {
+                    Flying flying = (Flying) mob;
+
+                    if (flying instanceof Ghast) {
+                        Ghast ghast = (Ghast) flying;
+                        attributes.a(ghast);
+                    }
+
+                    if (flying instanceof Phantom) {
+                        Phantom phantom = (Phantom) flying;
+                        size(phantom);
+                    }
+                    
+                }
+
+                if (mob instanceof Ambient) {
+                    Ambient ambient = (Ambient) mob;
+
+                    if (ambient instanceof Bat) {
+                        Bat bat = (Bat) ambient;
+                        attributes.a(bat);
+                    }
+                }
+
                 if (mob instanceof Creature) {
                     Creature creature = (Creature) mob;
+                    attributes.a(creature);
+
+                    if (creature instanceof Allay) {
+                        Allay allay = (Allay) creature;
+                        jukeBox(allay);
+                        attributes.a(allay);
+                    }
+
+                    if (creature instanceof Golem) {
+                        Golem golem = (Golem) creature;
+                        
+                        if (golem instanceof IronGolem) {
+                            IronGolem ironGolem = (IronGolem) golem;
+                            attributes.a(ironGolem);
+                        }
+
+                        if (golem instanceof Shulker) {
+                            Shulker shulker = (Shulker) golem;
+                            attachedFace(shulker);
+                            peek(shulker);
+                        }
+
+                        if (golem instanceof Snowman) {
+                            Snowman snowman = (Snowman) golem;
+                            attributes.a(snowman);
+                        }
+                    }
+
+                    if (creature instanceof WaterMob) {
+                        WaterMob waterMob = (WaterMob) creature;
+
+                        if (waterMob instanceof Squid) {
+                            Squid squid = (Squid) waterMob;
+
+                            if (squid instanceof GlowSquid) {
+                                GlowSquid glowSquid = (GlowSquid) squid;
+                                darkTicks(glowSquid);
+                            }
+                        }
+
+                        if (waterMob instanceof Fish) {
+                            Fish fish = (Fish) waterMob;
+
+                            if (fish instanceof PufferFish) {
+                                PufferFish pufferfish = (PufferFish) fish;
+                                puffState(pufferfish);
+                            }
+
+                            if (fish instanceof TropicalFish) {
+                                TropicalFish tropicalFish = (TropicalFish) fish;
+                                bodyColor(tropicalFish);
+                                pattern(tropicalFish);
+                                patternColor(tropicalFish);
+                            }
+                        }
+                    }
 
                     if (creature instanceof Monster) {
                         Monster monster = (Monster) creature;
@@ -291,166 +395,188 @@ public class EntityInfoMsg extends PlayerMsg {
                             }
                         }
                     }
-                }
+                    
+                    if (livingEntity instanceof Ageable) {
+                        Ageable ageable = (Ageable) livingEntity;
+                        attributes.a(ageable);
 
-                if (livingEntity instanceof Ageable) {
-                    Ageable ageable = (Ageable) livingEntity;
-                    attributes.a(ageable);
+                        if (ageable instanceof Breedable) {
+                            Breedable breedable = (Breedable) ageable;
+                            attributes.a(breedable);
 
-                    if (ageable instanceof Breedable) {
-                        Breedable breedable = (Breedable) ageable;
-                        attributes.a(breedable);
+                            if (breedable instanceof AbstractVillager) {
+                                AbstractVillager abstractVillager = (AbstractVillager) breedable;
 
-                        if (breedable instanceof Animals) {
-                            Animals animal = (Animals) breedable;
-                            love(animal);
+                                if (abstractVillager instanceof Villager) {
+                                    Villager villager = (Villager) abstractVillager;
+                                    profession(villager);
+                                    type(villager);
+                                    level(villager);
+                                    experience(villager);
+                                }
 
-                            if (animal instanceof Tameable) {
-                                Tameable tameable = (Tameable) animal;
-                                owner(tameable);
+                                if (abstractVillager instanceof WanderingTrader) {
+                                    WanderingTrader wanderingTrader = (WanderingTrader) abstractVillager;
+                                    despawn(wanderingTrader);
+                                }
+                            }
 
-                                if (tameable instanceof AbstractHorse) {
-                                    AbstractHorse abstractHorse = (AbstractHorse) tameable;
-                                    jump(abstractHorse);
+                            if (breedable instanceof Animals) {
+                                Animals animal = (Animals) breedable;
+                                love(animal);
 
-                                    if (abstractHorse instanceof Horse) {
-                                        Horse horse = (Horse) abstractHorse;
-                                        color(horse);
-                                        style(horse);
-                                    }
+                                if (animal instanceof Tameable) {
+                                    Tameable tameable = (Tameable) animal;
+                                    owner(tameable);
 
-                                    if (abstractHorse instanceof ChestedHorse) {
-                                        ChestedHorse chestedHorse = (ChestedHorse) abstractHorse;
-                                        attributes.a(chestedHorse);
+                                    if (tameable instanceof AbstractHorse) {
+                                        AbstractHorse abstractHorse = (AbstractHorse) tameable;
+                                        jump(abstractHorse);
 
-                                        if (chestedHorse instanceof Llama) {
-                                            Llama llama = (Llama) chestedHorse;
-                                            color(llama);
+                                        if (abstractHorse instanceof Horse) {
+                                            Horse horse = (Horse) abstractHorse;
+                                            color(horse);
+                                            style(horse);
+                                        }
+
+                                        if (abstractHorse instanceof ChestedHorse) {
+                                            ChestedHorse chestedHorse = (ChestedHorse) abstractHorse;
+                                            attributes.a(chestedHorse);
+
+                                            if (chestedHorse instanceof Llama) {
+                                                Llama llama = (Llama) chestedHorse;
+                                                color(llama);
+                                            }
+                                        }
+
+                                        if (abstractHorse instanceof Camel) {
+                                            Camel camel = (Camel) abstractHorse;
+                                            attributes.a(camel);
                                         }
                                     }
 
-                                    if (abstractHorse instanceof Camel) {
-                                        Camel camel = (Camel) abstractHorse;
-                                        attributes.a(camel);
+                                    if (tameable instanceof Wolf) {
+                                        Wolf wolf = (Wolf) tameable;
+                                        collar(wolf);
+                                        attributes.a(wolf);
+                                    }
+
+                                    if (tameable instanceof Cat) {
+                                        Cat cat = (Cat) tameable;
+                                        type(cat);
+                                        collar(cat);
+                                    }
+
+                                    if (tameable instanceof Parrot) {
+                                        Parrot parrot = (Parrot) tameable;
+                                        variant(parrot);
+                                        attributes.a(parrot);
+                                    }
+
+                                }
+
+                                if (animal instanceof Steerable) {
+                                    Steerable steerable = (Steerable) animal;
+                                    steer(steerable);
+                                    boost(steerable);
+
+                                    if (steerable instanceof Strider) {
+                                        Strider strider = (Strider) steerable;
+                                        attributes.a(strider);
                                     }
                                 }
 
-                                if (tameable instanceof Wolf) {
-                                    Wolf wolf = (Wolf) tameable;
-                                    collar(wolf);
-                                    attributes.a(wolf);
+                                if (animal instanceof Bee) {
+                                    Bee bee = (Bee) animal;
+                                    hive(bee);
+                                    flower(bee);
+                                    attributes.a(bee);
                                 }
 
-                                if (tameable instanceof Cat) {
-                                    Cat cat = (Cat) tameable;
-                                    type(cat);
-                                    collar(cat);
+                                if (animal instanceof Axolotl) {
+                                    Axolotl axolotl = (Axolotl) animal;
+                                    variant(axolotl);
+                                    attributes.a(axolotl);
                                 }
 
-                                if (tameable instanceof Parrot) {
-                                    Parrot parrot = (Parrot) tameable;
-                                    variant(parrot);
-                                    attributes.a(parrot);
+                                if (animal instanceof Cow) {
+                                    Cow cow = (Cow) animal;
+
+                                    if (cow instanceof MushroomCow) {
+                                        MushroomCow mushroom = (MushroomCow) cow;
+                                        variant(mushroom);
+                                    }
                                 }
 
-                            }
-
-                            if (animal instanceof Steerable) {
-                                Steerable steerable = (Steerable) animal;
-                                steer(steerable);
-                                boost(steerable);
-
-                                if (steerable instanceof Strider) {
-                                    Strider strider = (Strider) steerable;
-                                    attributes.a(strider);
+                                if (animal instanceof Fox) {
+                                    Fox fox = (Fox) animal;
+                                    type(fox);
                                 }
-                            }
 
-                            if (animal instanceof Bee) {
-                                Bee bee = (Bee) animal;
-                                hive(bee);
-                                flower(bee);
-                                attributes.a(bee);
-                            }
-
-                            if (animal instanceof Axolotl) {
-                                Axolotl axolotl = (Axolotl) animal;
-                                variant(axolotl);
-                                attributes.a(axolotl);
-                            }
-
-                            if (animal instanceof Cow) {
-                                Cow cow = (Cow) animal;
-
-                                if (cow instanceof MushroomCow) {
-                                    MushroomCow mushroom = (MushroomCow) cow;
-                                    variant(mushroom);
+                                if (animal instanceof Frog) {
+                                    Frog frog = (Frog) animal;
+                                    variant(frog);
                                 }
-                            }
 
-                            if (animal instanceof Fox) {
-                                Fox fox = (Fox) animal;
-                                type(fox);
-                            }
+                                if (animal instanceof Hoglin) {
+                                    Hoglin hoglin = (Hoglin) animal;
+                                    conversionTime(hoglin);
+                                    attributes.a(hoglin);
+                                }
 
-                            if (animal instanceof Frog) {
-                                Frog frog = (Frog) animal;
-                                variant(frog);
-                            }
+                                if (animal instanceof Ocelot) {
+                                    Ocelot ocelot = (Ocelot) animal;
+                                    attributes.a(ocelot);
+                                }
 
-                            if (animal instanceof Hoglin) {
-                                Hoglin hoglin = (Hoglin) animal;
-                                conversionTime(hoglin);
-                                attributes.a(hoglin);
-                            }
+                                if (animal instanceof Panda) {
+                                    Panda panda = (Panda) animal;
+                                    genes(panda);
+                                    unhappy(panda);
+                                    attributes.a(panda);
+                                }
 
-                            if (animal instanceof Ocelot) {
-                                Ocelot ocelot = (Ocelot) animal;
-                                attributes.a(ocelot);
-                            }
+                                if (animal instanceof Rabbit) {
+                                    Rabbit rabbit = (Rabbit) animal;
+                                    type(rabbit);
+                                }
 
-                            if (animal instanceof Panda) {
-                                Panda panda = (Panda) animal;
-                                mainGene(panda);
-                                hiddenGene(panda);
-                                unhappy(panda);
-                                attributes.a(panda);
-                            }
+                                if (animal instanceof Sheep) {
+                                    Sheep sheep = (Sheep) animal;
+                                    attributes.a(sheep);
+                                }
 
-                            if (animal instanceof Rabbit) {
-                                Rabbit rabbit = (Rabbit) animal;
-                                type(rabbit);
-                            }
+                                if (animal instanceof Sniffer) {
+                                    Sniffer sniffer = (Sniffer) animal;
+                                    state(sniffer);
+                                }
 
-                            if (animal instanceof Sheep) {
-                                Sheep sheep = (Sheep) animal;
-                                attributes.a(sheep);
-                            }
-
-                            if (animal instanceof Sniffer) {
-                                Sniffer sniffer = (Sniffer) animal;
-                                state(sniffer);
-                            }
-
-                            if (animal instanceof Turtle) {
-                                Turtle turtle = (Turtle) animal;
-                                attributes.a(turtle);
+                                if (animal instanceof Turtle) {
+                                    Turtle turtle = (Turtle) animal;
+                                    attributes.a(turtle);
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        
+        if (entity instanceof Colorable) {
+            Colorable colorable = (Colorable) entity;
+            color(colorable);
+        }
+
+        if (entity instanceof Sittable) {
+            Sittable sittable = (Sittable) entity;
+            attributes.a(sittable);
+        }
+        
         attributes(attributes);
     }
 
     private void name(Entity entity) {
         field("Name", entity.getCustomName());
-    }
-
-    private void age(Entity entity) {
-        int ticks = entity.getTicksLived();
-        if (ticks > 0 && entity instanceof LivingEntity) field("Age", Utl.toTime(ticks)); // Non living entities don't get their age saved
     }
 
     private void fire(Entity entity) {
@@ -517,9 +643,24 @@ public class EntityInfoMsg extends PlayerMsg {
         if (ticks > 0) field("Fuel", Utl.toTime(ticks));
     }
 
-    private void color(Colorable colorable) {
-        DyeColor color = colorable.getColor();
-        if (color != null) field("Color", Utl.titleCase(color.toString()));
+    private void health(Damageable damageable) {
+        double health = damageable.getHealth();
+        if (health > 0.0) field("Health", health);
+    }
+
+    private void absorbtion(Damageable damageable) {
+        double absorbtion = damageable.getAbsorptionAmount();
+        if (absorbtion > 0.0) field("Absorbtion", absorbtion);
+    }
+
+    private void maxHealth(LivingEntity livingEntity) {
+        AttributeInstance attr = livingEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (attr != null) field("Max Health", attr.getValue());
+    }
+
+    private void timeLived(LivingEntity livingEntity) {
+        int ticks = livingEntity.getTicksLived();
+        if (ticks > 0) field("Time Lived", Utl.toTime(ticks));
     }
 
     private void movementSpeed(LivingEntity livingEntity) {
@@ -528,9 +669,9 @@ public class EntityInfoMsg extends PlayerMsg {
     }
 
     private void air(LivingEntity livingEntity) {
-        int air = livingEntity.getRemainingAir();
-        int maxAir = livingEntity.getMaximumAir();
-        if (air != maxAir) ratiof("Air", air, maxAir);
+        int ticks = livingEntity.getRemainingAir();
+        int maxTicks = livingEntity.getMaximumAir();
+        if (ticks > 0 && ticks != maxTicks) field("Air", Utl.toTime(ticks));
     }
 
     private void arrows(LivingEntity livingEntity) {
@@ -556,6 +697,54 @@ public class EntityInfoMsg extends PlayerMsg {
         if (!livingEntity.isLeashed()) return;
         Entity leashHolder = livingEntity.getLeashHolder();
         field("Leash Holder", Utl.id(leashHolder));
+    }
+
+    private void size(Slime slime) {
+        field("Size", slime.getSize());
+    }
+
+    private void size(Phantom phantom) {
+        field("Size", phantom.getSize());
+    }
+
+    private void jukeBox(Allay allay) {
+        if (!allay.isDancing()) return;
+        field("Juke Box", Utl.id(allay.getJukebox()));
+    }
+
+    private void attachedFace(Shulker shulker) {
+        field("Facing", Utl.id(shulker.getAttachedFace().getOppositeFace()));
+    }
+
+    private void peek(Shulker shulker) {
+        float peek = shulker.getPeek();
+        if (peek < 0.005) return;
+        field("Peek", Utl.toPercent(peek));
+    }
+
+    private void darkTicks(GlowSquid glowSquid) {
+        int ticks = glowSquid.getDarkTicksRemaining();
+        if (ticks > 0) field("Dark", Utl.toTime(ticks));
+    }
+
+    private void puffState(PufferFish pufferfish) {
+        int puffState = pufferfish.getPuffState();
+        if (puffState > 0) field("Puff State", puffState);
+    }
+
+    private void bodyColor(TropicalFish tropicalFish) {
+        DyeColor color = tropicalFish.getBodyColor();
+        if (color != null) field("Body Color", Utl.titleCase(color.toString()));
+    }
+
+    private void pattern(TropicalFish tropicalFish) {
+        TropicalFish.Pattern pattern = tropicalFish.getPattern();
+        field("Pattern", Utl.titleCase(pattern.toString()));
+    }
+
+    private void patternColor(TropicalFish tropicalFish) {
+        DyeColor color = tropicalFish.getPatternColor();
+        if (color != null) field("Pattern Color", Utl.titleCase(color.toString()));
     }
 
     private void conversionTime(Skeleton skeleton) {
@@ -698,6 +887,31 @@ public class EntityInfoMsg extends PlayerMsg {
         if (ticks > 0) field("Invulnerability", Utl.toTime(ticks));
     }
 
+    private void profession(Villager villager) {
+        Profession profession = villager.getProfession();
+        if (profession == Profession.NONE) return;
+        field("Profession", Utl.titleCase(profession.toString()));
+    }
+
+    private void type(Villager villager) {
+        field("Type", Utl.titleCase(villager.getVillagerType().toString()));
+    }
+
+    private void level(Villager villager) {
+        int level = villager.getVillagerLevel();
+        if (level > 0) field("Level", level);
+    }
+
+    private void experience(Villager villager) {
+        int experience = villager.getVillagerExperience();
+        if (experience > 0) field("Experience", experience);
+    }
+
+    private void despawn(WanderingTrader wanderingTrader) {
+        int ticks = wanderingTrader.getDespawnDelay();
+        if (ticks > 0) field("Leaving In", Utl.toTime(ticks));
+    }
+
     private void love(Animals animal) {
         int love = animal.getLoveModeTicks();
         if (love > 0) field("Love Mode", Utl.toTime(love));
@@ -782,12 +996,8 @@ public class EntityInfoMsg extends PlayerMsg {
         field("Variant", Utl.titleCase(mushroom.getVariant().toString()));
     }
 
-    private void mainGene(Panda panda) {
-        field("Main Gene", Utl.titleCase(panda.getMainGene().toString()));
-    }
-
-    private void hiddenGene(Panda panda) {
-        field("Hidden Gene", Utl.titleCase(panda.getHiddenGene().toString()));
+    private void genes(Panda panda) {
+        field("Genes", Utl.titleCase(panda.getMainGene().toString()) + ", " + Utl.titleCase(panda.getHiddenGene().toString()));
     }
 
     private void unhappy(Panda panda) {
@@ -801,6 +1011,11 @@ public class EntityInfoMsg extends PlayerMsg {
 
     private void state(Sniffer sniffer) {
         field("State", Utl.titleCase(sniffer.getState().toString()));
+    }
+
+    private void color(Colorable colorable) {
+        DyeColor color = colorable.getColor();
+        if (color != null) field("Color", Utl.titleCase(color.toString()));
     }
 
     private void attributes(EntityAttributes attributes) {
